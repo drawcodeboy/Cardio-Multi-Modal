@@ -1,9 +1,14 @@
 # Virtual Environment
-.venv
+.venv/
 
 # pycache
 **/__pycache__/**
 
 # vscode
-.vscode
+.vscode/
+
+# data
+data/*
+!data/temp.txt # save data directory
+
 
