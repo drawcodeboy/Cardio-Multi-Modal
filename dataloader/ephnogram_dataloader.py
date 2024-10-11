@@ -1,3 +1,4 @@
+import torch
 from torch.utils.data import Dataset
 
 import os
@@ -41,6 +42,8 @@ class ephnogram_dataloader(Dataset):
         self.data_li = [] # element is list that contains [sample_path, start_point, label]
         self._check()
         
+        self.transform = transform
+        
     def __len__(self):
         return len(self.data_li)
     
@@ -53,9 +56,13 @@ class ephnogram_dataloader(Dataset):
         if start_point == 0: # Issue: PCG는 start point가 항상 1임 -> t_0 -> 0으로 초기화
             x_pcg[0] = 0.
             
-        # Implementation List
+        # Implementation List (transform)
         # (1) Downsampling
         # (2) transform for preprocessing (Normalization)
+        if self.transform is not None:
+            x_ecg, x_pcg = self.transform(x_ecg, x_pcg)
+            
+        label = torch.tensor([label], dtype=torch.float64) # long type for label
         
         return x_ecg, x_pcg, label
     
@@ -63,7 +70,7 @@ class ephnogram_dataloader(Dataset):
         metadata = pd.read_csv(f"{self.dataset_path}/ECGPCGSpreadsheet.csv")
         
         for i in range(metadata.shape[0]):
-            if i == 2: break # for debugging
+            # if i == 2: break # for debugging
             print(f"\rLoad Dataset[{i+1:02d}/{metadata.shape[0]:02d}] ({100*(i+1)/metadata.shape[0]:.2f}%)", end="")
             
             row = metadata.iloc[i]
@@ -92,7 +99,7 @@ if __name__ == '__main__':
     x_ecg, x_pcg, label = ds[362]
     
     print(x_ecg.shape, x_pcg.shape)
-    print(len(ds))
+    print(len(ds)) # if 5secs sampling, number of samples is 22,008
     
     import matplotlib.pyplot as plt
     import numpy as np
