@@ -67,6 +67,7 @@ class ephnogram_dataloader(Dataset):
         return x_ecg, x_pcg, label
     
     def _check(self):
+        # label_cnt = [0 for i in range(0, 7)] # for debugging
         metadata = pd.read_csv(f"{self.dataset_path}/ECGPCGSpreadsheet.csv")
         
         for i in range(metadata.shape[0]):
@@ -92,10 +93,15 @@ class ephnogram_dataloader(Dataset):
             # Add to self.data_li
             for start_point in range(0, sample[1]['sig_len'], self.sample_len):
                 self.data_li.append([sample_path, start_point, label])
+            
+            # label_cnt[label] += (sample[0].shape[0] // self.sample_len) # for debugging
+        
+        # print(label_cnt) # for debugging
         print()
 
 if __name__ == '__main__':
     ds = ephnogram_dataloader()
+    
     x_ecg, x_pcg, label = ds[362]
     
     print(x_ecg.shape, x_pcg.shape)
