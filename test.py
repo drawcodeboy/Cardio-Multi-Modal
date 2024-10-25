@@ -71,7 +71,7 @@ def main(args):
     start_time = int(time.time())
     results = evaluate(model, dl, device)
     elapsed_time = int(time.time() - start_time)
-    print(f"Test Time: {elapsed_time//60:02d}m {elapsed_time%60:02d}s", end="\n\n")
+    print(f"Test Time: {elapsed_time//60:02d}m {elapsed_time%60:02d}s", end="\n")
     
     print("=====================[Performance]=======================")
     for key, value in results.items():
