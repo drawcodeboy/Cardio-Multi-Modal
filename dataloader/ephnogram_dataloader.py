@@ -84,7 +84,10 @@ class ephnogram_dataloader(Dataset):
         
         if self.transform is not None:
             x_ecg, x_pcg = self.transform(x_ecg, x_pcg)
-            
+        
+        # To Tensor
+        x_ecg = torch.tensor(x_ecg.copy(), dtype=torch.float32)
+        x_pcg = torch.tensor(x_pcg.copy(), dtype=torch.float32)
         label = torch.tensor([label], dtype=torch.float64) # long type for label
         
         return x_ecg, x_pcg, label
@@ -131,8 +134,8 @@ if __name__ == '__main__':
     train_ds = ephnogram_dataloader(mode='train')
     test_ds = ephnogram_dataloader(mode='test')
     
-    for i, (x1, x2, label) in enumerate(train_ds):
-        print(f"\rload {i}", end='')
+    # for i, (x1, x2, label) in enumerate(train_ds):
+    #     print(f"\rload {i}", end='')
     
     x_ecg, x_pcg, label = train_ds[0]
     
