@@ -73,8 +73,18 @@ def main(args):
     elapsed_time = int(time.time() - start_time)
     print(f"Test Time: {elapsed_time//60:02d}m {elapsed_time%60:02d}s", end="\n\n")
     
+    print("=====================[Performance]=======================")
     for key, value in results.items():
         print(f"{key}: {value:.6f}")
+        
+    print("====================[Elapsed Time]=======================")
+    batches = [1, 2, 4, 8, 16, 32]
+    for batch in batches:
+        dummy = torch.randn((batch, 5000, 1))
+        start_time = time.time()
+        model(dummy, dummy)
+        elapsed_time = time.time() - start_time
+        print(f"Batch size[{batch:04d}] -> Elapsed Time: {elapsed_time*1000:.4f}ms")
         
 if __name__ == '__main__':
     parser = argparse.ArgumentParser('Test ECG & PCG motor state classificiation model', parents=[get_args_parser()])
