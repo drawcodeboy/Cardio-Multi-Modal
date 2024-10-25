@@ -86,8 +86,8 @@ class ephnogram_dataloader(Dataset):
             x_ecg, x_pcg = self.transform(x_ecg, x_pcg)
         
         # To Tensor
-        x_ecg = torch.tensor(x_ecg.copy(), dtype=torch.float32)
-        x_pcg = torch.tensor(x_pcg.copy(), dtype=torch.float32)
+        x_ecg = torch.tensor(x_ecg.copy(), dtype=torch.float32).reshape(-1, 1)
+        x_pcg = torch.tensor(x_pcg.copy(), dtype=torch.float32).reshape(-1, 1)
         label = torch.tensor([label], dtype=torch.int64) # long type for label
         
         return x_ecg, x_pcg, label
@@ -97,7 +97,7 @@ class ephnogram_dataloader(Dataset):
         metadata = pd.read_csv(f"{self.dataset_path}/ECGPCGSpreadsheet.csv")
         
         for i in range(metadata.shape[0]):
-            # if i == 7: break # for debugging
+            # if i == 1: break # for debugging
             print(f"\rLoad Dataset[{i+1:02d}/{metadata.shape[0]:02d}] ({100*(i+1)/metadata.shape[0]:.2f}%)", end="")
             
             row = metadata.iloc[i]
