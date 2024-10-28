@@ -9,12 +9,12 @@ from scipy.signal import decimate
 
 class ephnogram_dataloader(Dataset):
     def __init__(self,
-                 dataset_path=r"data/physionet.org/files/ephnogram/1.0.0",
-                 mode='train',
-                 split_ratio:float=0.7,
-                 seq_seconds:int=5, #seconds
-                 transform=None,
-                 check_load:bool=False):
+                dataset_path=r"data/physionet.org/files/ephnogram/1.0.0",
+                mode='train',
+                split_ratio:float=0.7,
+                seq_seconds:int=5, #seconds
+                transform=None,
+                check_load:bool=False):
         super().__init__()
         
         # (1) Initialization
