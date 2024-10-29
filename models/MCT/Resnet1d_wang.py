@@ -77,7 +77,6 @@ class ResNet1d_Wang(nn.Module):
         x = self.block1(x)
         x = self.block2(x)
         x = self.block3(x)
-        print(x.shape)
         
         # 최종 출력 형태는 (batch_size, token_dim, sequence_length)로 토큰화된 특징 벡터를 반환
         return x
