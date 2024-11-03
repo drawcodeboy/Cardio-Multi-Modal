@@ -31,11 +31,8 @@ class MCT_VIT_Block(nn.Module):
         ecg_tokens_shape: torch.Size([128, 32, 313]), pcg_tokens_shape: torch.Size([128, 32, 313]) = (batch_size, token_dim, sequence_length)
         '''
         # 1. Linear
-        cls_token = cls_token.permute(0, 2, 1)  # (batch_size, 1, token_dim) 
-        input_tokens = input_tokens.permute(0, 2, 1)  # (batch_size, sequence_length, token_dim) 
-
-        cls_token_proj = self.cls_linear(cls_token)  # (batch_size, 1, token_dim/2)
-        input_tokens_proj = self.token_linear(input_tokens)  # (batch_size, sequence_length, token_dim/2)
+        cls_token_proj = self.cls_linear(cls_token.permute(0, 2, 1))  # (batch_size, 1, token_dim/2)
+        input_tokens_proj = self.token_linear(input_tokens.permute(0, 2, 1))  # (batch_size, sequence_length, token_dim/2)
 
         # concat(Cls token 벡터를 시퀀스의 길이만큼 repeat시킴)
         token_concat = torch.cat([cls_token_proj.expand(-1, input_tokens_proj.size(1), -1), input_tokens_proj], dim=-1)  # (batch_size, sequence_length, token_dim)
@@ -50,25 +47,19 @@ class MCT_VIT_Block(nn.Module):
         token_multiscale = token_concat + token_out3 + token_out5 + token_out7 # (batch_size, token_dim, sequence_length) 
 
         # 3. Feed-forward(1)
-        token_multiscale = token_multiscale.permute(0, 2, 1)  
-        norm_multiscale = self.norm_conv(token_multiscale) # (batch_size, sequence_length, token_dim) 
-
-        conv_input = norm_multiscale.permute(0, 2, 1)  
-        conv_output = self.conv1x1(conv_input)  # (batch_size, token_dim, sequence_length)
-        conv_output = conv_output.permute(0, 2, 1) 
-
-        norm_ffn = self.norm_ffn(conv_output) # (batch_size, sequence_length, token_dim) 
+        norm_multiscale = self.norm_conv(token_multiscale.permute(0, 2, 1)) # (batch_size, sequence_length, token_dim) 
+        conv_output = self.conv1x1(norm_multiscale.permute(0, 2, 1))   # (batch_size, token_dim, sequence_length)
+        norm_ffn = self.norm_ffn(conv_output.permute(0, 2, 1)) # (batch_size, sequence_length, token_dim)
         activated_ffn = self.gelu(norm_ffn)  # (batch_size, sequence_length, token_dim)
-        token_residual = token_multiscale + activated_ffn # (batch_size, sequence_length, token_dim)
+        token_residual = token_multiscale + activated_ffn.permute(0, 2, 1) # (batch_size, token_dim, sequence_length)
 
         # 4. Feed-forward(2)-(MHSA)
-        norm_mhsa_input = self.norm_mhsa(token_residual) # (batch_size, sequence_length, token_dim)
+        norm_mhsa_input = self.norm_mhsa(token_residual.permute(0, 2, 1)) # (batch_size, sequence_length, token_dim)
         attn_output, _ = self.mhsa(norm_mhsa_input, norm_mhsa_input, norm_mhsa_input)  # (batch_size, sequence_length, token_dim)
-
-        final_output = attn_output.permute(0, 2, 1)  # (batch_size, 1, token_dim) 
-
+        output = token_residual + attn_output.permute(0, 2, 1)
+    
         # output: (batch_size, token_dim, sequence_length) 
-        return final_output
+        return output
 
 
 
