@@ -12,10 +12,10 @@ data/*
 !data/data_review.ipynb
 
 # saved
-saved/*
-!saved/temp.txt
+!saved/losses/
 saved/losses/*
 !saved/losses/temp.txt
+
+!saved/weights/
 saved/weights/*
 !saved/weights/temp.txt
-
