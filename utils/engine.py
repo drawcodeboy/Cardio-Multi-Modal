@@ -16,7 +16,7 @@ def train_one_epoch(model, dataloader, optimizer, loss_fn, scheduler, device):
         x_ecg = x_ecg.to(device)
         x_pcg = x_pcg.to(device)
         
-        targets = targets.reshape(-1)
+        targets = targets.reshape(-1).to(device)
         
         logits = model(x_ecg, x_pcg)
         
