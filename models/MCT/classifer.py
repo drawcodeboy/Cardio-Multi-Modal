@@ -9,7 +9,7 @@ class Classifier(nn.Module):
             nn.Linear(input_dim, hidden_dim),  # input_dim: token_dim * 3
             nn.ReLU(),
             nn.Linear(hidden_dim, output_dim),  
-            nn.Softmax(dim=1)
+            # nn.Softmax(dim=1)
         )
 
     def forward(self, x):
