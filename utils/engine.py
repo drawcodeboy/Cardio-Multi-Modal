@@ -47,7 +47,12 @@ def evaluate(model, dataloader, device) -> Dict[str, float]:
         targets = targets.reshape(-1)
         
         logits = model(x_ecg, x_pcg)
+        # print(logits)
+        # print(F.softmax(logits, dim=1))
         outputs = torch.argmax(F.softmax(logits, dim=1), dim=1)
+        
+        # print(outputs)
+        # print(targets)
         
         total_outputs.extend(outputs.tolist())
         total_targets.extend(targets.tolist())
