@@ -33,7 +33,7 @@ class MCT_Model(nn.Module):
         self.fusion_block_3 = FusionBlock()
         
         # 5. Classifier
-        self.classifier = Classifier(input_dim=32 * 3, hidden_dim=64, output_dim=10)
+        self.classifier = Classifier(input_dim=32 * 3, hidden_dim=64, output_dim=7)
 
     def forward(self, ecg, pcg): 
         # pcg, ecg (batch_size, 5000, 1) 
