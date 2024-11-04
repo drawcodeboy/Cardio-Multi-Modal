@@ -29,7 +29,7 @@ def get_args_parser():
     return parser
 
 def print_setup(device, args):
-    print("=======================[Settings]========================")
+    print("========================[Settings]=========================")
     print(f"\n  [GPU]")
     print(f"  |-[device]: {device}")
     print(f"\n  [MODEL]")
@@ -40,7 +40,7 @@ def print_setup(device, args):
     print(f"  |-[batch size]: {args.batch_size}")
     print(f"\n [SAVE]")
     print(f"  |-[weights filename]: {args.weights_filename}")
-    print("\n=======================================================")
+    print("\n=========================================================")
     
     print("Proceed? [Y/N]: ", end="")
     proceed = input().lower()
@@ -51,7 +51,7 @@ def print_setup(device, args):
 def main(args):
     device = 'cpu'
     if args.use_cuda and torch.cuda.is_available():
-        device = 'cuda'
+        device = 'cuda:0'
         
     print_setup(device, args)
     
@@ -78,9 +78,9 @@ def main(args):
         print(f"{key}: {value:.6f}")
         
     print("====================[Elapsed Time]=======================")
-    batches = [1, 2, 4, 8, 16, 32]
+    batches = [1, 2, 4, 8, 16, 32, 64]
     for batch in batches:
-        dummy = torch.randn((batch, 5000, 1))
+        dummy = torch.randn((batch, 5000, 1)).to(device)
         start_time = time.time()
         model(dummy, dummy)
         elapsed_time = time.time() - start_time
