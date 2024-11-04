@@ -8,7 +8,7 @@ from torch import nn, optim
 from torch.utils.data import DataLoader
 from torch.optim.lr_scheduler import ReduceLROnPlateau
 
-import argparse, time, os
+import argparse, time, os, sys
 
 def get_args_parser():
     parser = argparse.ArgumentParser(add_help=False)
@@ -58,9 +58,10 @@ def print_setup(device, args):
         
 def main(args):
     device = 'cpu'
+    #device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     if args.use_cuda and torch.cuda.is_available():
-        device = 'cuda'
-        
+        device = 'cuda:0'
+            
     print_setup(device, args)
     
     # Load Model
@@ -76,7 +77,7 @@ def main(args):
     optimizer = optim.AdamW(model.parameters(), lr=args.lr)
     
     # Loss function
-    loss_fn = nn.CrossEntropyLoss()
+    loss_fn = nn.CrossEntropyLoss().to(device)
     
     # Scheduler (논문에는 쓴다고 나와있지는 않았으나, 쓰는 것도 좋을 듯)
     scheduler = ReduceLROnPlateau(optimizer,
