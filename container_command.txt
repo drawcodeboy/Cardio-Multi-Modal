@@ -1,0 +1,2 @@
+# Run Container
+docker run --gpus all -itd -v .:/workspace/ --name kdw_capstone torch_img /bin/bash
