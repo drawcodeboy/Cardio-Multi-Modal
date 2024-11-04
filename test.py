@@ -78,12 +78,13 @@ def main(args):
         print(f"{key}: {value:.6f}")
         
     print("====================[Elapsed Time]=======================")
-    batches = [1, 2, 4, 8, 16, 32, 64]
-    for batch in batches:
+    batches = [1, 1, 2, 4, 8, 16, 32, 64]
+    for idx, batch in enumerate(batches):
         dummy = torch.randn((batch, 5000, 1)).to(device)
         start_time = time.time()
         model(dummy, dummy)
         elapsed_time = time.time() - start_time
+        if idx == 0: continue # 맨 첫 연산이 조금 오래 걸리는 거 같아서 temp(1) 넣어둠
         print(f"Batch size[{batch:04d}] -> Elapsed Time: {elapsed_time*1000:.4f}ms")
         
 if __name__ == '__main__':
