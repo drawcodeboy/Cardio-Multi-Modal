@@ -10,6 +10,7 @@
 # data
 data/*
 !data/data_review.ipynb
+!data/data_review_charis.ipynb
 
 # saved
 !saved/losses/
